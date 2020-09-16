@@ -21,7 +21,7 @@ val colors : Array<Int> = arrayOf(
         "#00BCD4"
 ).map({Color.parseColor(it)}).toTypedArray()
 val lines : Int = 3
-val parts : Int = lines + 1
+val parts : Int = lines + 2
 val scGap : Float = 0.02f / (parts + 1)
 val strokeFactor : Float = 90f
 val sizeFactor : Float = 3.8f
@@ -37,9 +37,12 @@ fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
 fun Canvas.drawOpenBoxFiller(scale : Float, w : Float, h : Float, paint : Paint) {
     val sf : Float = scale.sinify()
     val size : Float = Math.min(w, h) / sizeFactor
+    val sfAfterLine : Float = sf.divideScale(lines, parts + 1)
     val sfLast : Float = sf.divideScale(parts - 1, parts + 1)
     save()
     translate(w / 2, h / 2)
+    save()
+    rotate(180f * (1 - sfAfterLine))
     for (j in 0..(lines - 1)) {
         val sfj : Float = sf.divideScale(j, parts + 1)
         save()
@@ -47,6 +50,7 @@ fun Canvas.drawOpenBoxFiller(scale : Float, w : Float, h : Float, paint : Paint)
         drawLine(size / 2, -size / 2, size / 2, -size / 2 + size * sfj, paint)
         restore()
     }
+    restore()
     val y : Float = size / 2 * (1f - sfLast)
     drawRect(RectF(-size / 2, y, size / 2, size / 2), paint)
     restore()
