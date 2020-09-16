@@ -10,6 +10,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.graphics.Color
 import android.graphics.Canvas
+import android.graphics.RectF
 import android.app.Activity
 
 val colors : Array<Int> = arrayOf(
@@ -31,3 +32,30 @@ fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
 fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
+
+fun Canvas.drawOpenBoxFiller(scale : Float, w : Float, h : Float, paint : Paint) {
+    val sf : Float = scale.sinify()
+    val size : Float = Math.min(w, h) / sizeFactor
+    val sfLast : Float = sf.divideScale(parts - 1, parts + 1)
+    save()
+    translate(w / 2, h / 2)
+    for (j in 0..(lines - 1)) {
+        val sfj : Float = sf.divideScale(j, parts + 1)
+        save()
+        rotate(gapDeg * j)
+        drawLine(size / 2, -size / 2, size / 2, -size / 2 + size * sfj, paint)
+        restore()
+    }
+    val y : Float = size / 2 * (1f - sfLast)
+    drawRect(RectF(-size / 2, y, size / 2, size / 2), paint)
+    restore()
+}
+
+fun Canvas.drawOBFNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    paint.color = colors[i]
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    drawOpenBoxFiller(scale, w, h, paint)
+}
