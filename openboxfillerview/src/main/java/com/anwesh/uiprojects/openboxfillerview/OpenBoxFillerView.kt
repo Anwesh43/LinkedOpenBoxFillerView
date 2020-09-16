@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.openboxfillerview
  * Created by anweshmishra on 17/09/20.
  */
 
+import android.app.Activity
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
@@ -11,7 +12,6 @@ import android.graphics.Paint
 import android.graphics.Color
 import android.graphics.Canvas
 import android.graphics.RectF
-import android.app.Activity
 
 val colors : Array<Int> = arrayOf(
         "#F44336",
@@ -211,6 +211,15 @@ class OpenBoxFillerView(ctx : Context) : View(ctx) {
             obf.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+
+        fun create(activity : Activity) : OpenBoxFillerView {
+            val view : OpenBoxFillerView = OpenBoxFillerView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
