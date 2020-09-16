@@ -63,14 +63,16 @@ fun Canvas.drawOBFNode(i : Int, scale : Float, paint : Paint) {
 
 class OpenBoxFillerView(ctx : Context) : View(ctx) {
 
-    override fun onDraw(canvas : Canvas) {
+    private val renderer : Renderer = Renderer(this)
 
+    override fun onDraw(canvas : Canvas) {
+        renderer.render(canvas)
     }
 
     override fun onTouchEvent(event : MotionEvent) : Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                renderer.handleTap()
             }
         }
         return true
@@ -84,6 +86,7 @@ class OpenBoxFillerView(ctx : Context) : View(ctx) {
                 scale = prevScale + dir
                 dir = 0f
                 prevScale = scale
+                cb(prevScale)
             }
         }
 
